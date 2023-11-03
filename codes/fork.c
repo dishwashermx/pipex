@@ -6,7 +6,7 @@
 /*   By: ghwa <ghwa@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 16:17:17 by ghwa              #+#    #+#             */
-/*   Updated: 2023/11/03 10:26:27 by ghwa             ###   ########.fr       */
+/*   Updated: 2023/11/03 10:26:49 by ghwa             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	childprocess(t_ppx *ppx, int *pipefd)
 		close (pipefd[1]);
 		ft_putstr_fd("child 2\n", 2);
 		dup2(pipefd[0], 0);
-		// dup2(ppx->fd2, 1);
+		dup2(ppx->fd2, 1);
 	}
 	// else
 	// {
