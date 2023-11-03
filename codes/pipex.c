@@ -6,7 +6,7 @@
 /*   By: ghwa <ghwa@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/12 09:25:12 by ghwa              #+#    #+#             */
-/*   Updated: 2023/10/31 11:25:30 by ghwa             ###   ########.fr       */
+/*   Updated: 2023/11/03 15:07:03 by ghwa             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,12 @@ int	main(int argc, char **argv, char **envp)
 
 	if (initall(&ppx, argc, argv, envp) == 0)
 		return (0);
-	printf("argc %d\n", argc);
+	if (pipe(ppx.pipefd) < 0)
+		customexit("PIPE");
 	while (ppx.count < (argc - 1))
 	{
 		forkprocess(&ppx);
 		ppx.count++;
 	}
+	parentprocess(&ppx);
 }

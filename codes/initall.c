@@ -6,7 +6,7 @@
 /*   By: ghwa <ghwa@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/12 13:55:54 by ghwa              #+#    #+#             */
-/*   Updated: 2023/11/03 09:52:37 by ghwa             ###   ########.fr       */
+/*   Updated: 2023/11/03 11:56:08 by ghwa             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ void	initvalues(t_ppx *ppx, int argc, char **argv)
 	char	*heredoc;
 
 	heredoc = ft_strdup(argv[1]);
+	if (!heredoc)
+		customexit("INIT_ERR");
 	if (ft_strncmp(heredoc, "here_doc", 9) == 0)
 		ppx->heredoc = 1;
 	else
