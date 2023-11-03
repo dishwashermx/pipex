@@ -6,7 +6,7 @@
 /*   By: ghwa <ghwa@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/12 13:55:54 by ghwa              #+#    #+#             */
-/*   Updated: 2023/11/03 11:56:08 by ghwa             ###   ########.fr       */
+/*   Updated: 2023/11/03 17:53:24 by ghwa             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,10 @@ void	initvalues(t_ppx *ppx, int argc, char **argv)
 	else
 		ppx->file1 = argv[1];
 	ppx->file2 = argv[argc - 1];
-	ppx->count = 2;
+	ppx->count = 2 + ppx->heredoc;
 	ppx->argc = argc;
 	ppx->argv = argv;
+	ppx->pipefdcount = 0;
 	free (heredoc);
 }
 
@@ -58,6 +59,30 @@ int	initenvp(t_ppx *ppx, char **envp)
 	return (0);
 }
 
+int	initpipefd(t_ppx *ppx)
+{
+	int	pipecount;
+	int	i;
+
+	i = 0;
+	pipecount = ppx->argc - 4;
+	ppx->pipecount = pipecount;
+	ppx->pipefdarray = malloc(pipecount * sizeof(void *));
+	if (!ppx->pipefdarray)
+		return (0);
+	while (pipecount > 0)
+	{
+		ppx->pipefdarray[i] = malloc(2 * sizeof(int));
+		if (!ppx->pipefdarray[i])
+			return (0);
+		if (pipe(ppx->pipefdarray[i]) < 0)
+			return (customexit("PIPE"));
+		i++;
+		pipecount--;
+	}
+	return (1);
+}
+
 int	initall(t_ppx *ppx, int argc, char **argv, char **envp)
 {
 	initvalues(ppx, argc, argv);
@@ -65,10 +90,7 @@ int	initall(t_ppx *ppx, int argc, char **argv, char **envp)
 		return (0);
 	if (initenvp(ppx, envp) == 0)
 		return (0);
+	if (initpipefd(ppx) == 0)
+		return (0);
 	return (1);
 }
-
-// initpipefd(t_ppx *ppx)
-// {
-	
-// }

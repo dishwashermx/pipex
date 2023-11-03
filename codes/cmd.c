@@ -6,7 +6,7 @@
 /*   By: ghwa <ghwa@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 16:34:17 by ghwa              #+#    #+#             */
-/*   Updated: 2023/11/03 11:00:49 by ghwa             ###   ########.fr       */
+/*   Updated: 2023/11/03 18:25:29 by ghwa             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,4 +45,24 @@ int	accesscheck(t_ppx *ppx, int argc, char **argv)
 	if (argc < 5)
 		return (customexit("ERROR: INSUFFICIENT ARGUMENTS"));
 	return (1);
+}
+
+void	freeall(t_ppx *ppx)
+{
+	int	i;
+
+	i = 0;
+	while (ppx->isplitthisinchild[i] != NULL)
+	{
+		free (ppx->isplitthisinchild[i]);
+		i++;
+	}
+	i = 0;
+	while (ppx->envp[i] != NULL)
+	{
+		free (ppx->envp[i]);
+		i++;
+	}
+	free(ppx->isplitthisinchild);
+	free(ppx->envp);
 }

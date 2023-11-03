@@ -6,7 +6,7 @@
 /*   By: ghwa <ghwa@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/12 13:48:55 by ghwa              #+#    #+#             */
-/*   Updated: 2023/11/03 13:43:58 by ghwa             ###   ########.fr       */
+/*   Updated: 2023/11/03 18:22:00 by ghwa             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,13 +31,14 @@ typedef struct s_ppx {
 	char	*file2;
 	int		fd1;
 	int		fd2;
-	int		pipefd[2];
-	int		**ppipefd;
+	int		**pipefdarray;
+	int		pipefdcount;
 	int		pid;
 	int		pipecount;
 	int		count;
 	char	**envppath;
 	int		bincount;
+	char	**isplitthisinchild;
 }	t_ppx;
 
 int		initall(t_ppx *ppx, int argc, char **argv, char **envp);
@@ -46,5 +47,6 @@ int		accesscheck(t_ppx *ppx, int argc, char **argv);
 char	*findcmdpath(t_ppx *ppx);
 int		customexit(char *string);
 void	parentprocess(t_ppx *ppx);
+void	freeall(t_ppx *ppx);
 
 #endif
