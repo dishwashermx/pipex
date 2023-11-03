@@ -6,7 +6,7 @@
 /*   By: ghwa <ghwa@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 16:17:17 by ghwa              #+#    #+#             */
-/*   Updated: 2023/10/31 17:27:48 by ghwa             ###   ########.fr       */
+/*   Updated: 2023/11/03 10:26:27 by ghwa             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,35 +16,31 @@ void	childprocess(t_ppx *ppx, int *pipefd)
 {
 	char	**argv;
 
-	argv = ft_split(ppx->argv[ppx->count], ' ');
 	if (ppx->count == 2)
 	{
+		close (pipefd[0]);
 		ft_putstr_fd("child 1\n", 2);
-		ft_putnbr_fd(pipefd[1], 2);
 		dup2(pipefd[1], 1);
 		dup2(ppx->fd1, 0);
-		close (pipefd[0]);
 	}
 	else if (ppx->count == (ppx->argc - 2))
 	{
-		ft_putnbr_fd(pipefd[0], 2);
+		close (pipefd[1]);
 		ft_putstr_fd("child 2\n", 2);
 		dup2(pipefd[0], 0);
-		dup2(ppx->fd2, 1);
-		close (pipefd[1]);
+		// dup2(ppx->fd2, 1);
 	}
 	// else
 	// {
 	// 	dup2(pipefd[1], 1);
 	// 	dup2(pipefd[0], 0);
 	// }
-	ft_putstr_fd("before execve\n", 2);
-	ft_putstr_fd(findcmdpath(ppx), 2);
+	argv = ft_split(ppx->argv[ppx->count], ' ');
 	execve(findcmdpath(ppx), argv, ppx->envp);
 	customexit("EXECVE");
 }
 
-void	parentprocess(int *pipefd, int pid)
+void	parentprocess(t_ppx *ppx, int *pipefd, int pid)
 {
 	int	status;
 
@@ -54,9 +50,9 @@ void	parentprocess(int *pipefd, int pid)
 	if (waitpid(pid, &status, 0) == -1)
 		customexit("WAITPID");
 	if (WIFEXITED(status))
-		ft_printf("Child process exited with status: %d\n", WEXITSTATUS(status));
+		ft_printf("Child process %d exited with status: %d\n", ppx->count, WEXITSTATUS(status));
 	else
-		ft_printf("Child process terminated abnormally\n");
+		ft_printf("Child process %d terminated abnormally\n", ppx->count);
 }
 
 int	forkprocess(t_ppx *ppx)
@@ -67,12 +63,16 @@ int	forkprocess(t_ppx *ppx)
 	// ppx->pipefd = (initpipefd(ppx));
 	if (pipe(pipefd) < 0)
 		customexit("PIPE");
+	printf("FD     1 %d\n", ppx->fd1);
+	printf("FD     2 %d\n", ppx->fd2);
+	printf("PIPEFD 0 %d\n", pipefd[0]);
+	printf("PIPEFD 1 %d\n", pipefd[1]);
 	pid = fork();
 	if (pid == -1)
 		customexit("FORK");
 	else if (pid == 0)
 		childprocess(ppx, pipefd);
 	else
-		parentprocess(pipefd, pid);
+		parentprocess(ppx, pipefd, pid);
 	return (0);
 }
