@@ -6,7 +6,7 @@
 /*   By: ghwa <ghwa@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 16:34:17 by ghwa              #+#    #+#             */
-/*   Updated: 2023/11/03 18:25:29 by ghwa             ###   ########.fr       */
+/*   Updated: 2023/11/07 17:20:55 by ghwa             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,15 @@ char	*findcmdpath(t_ppx *ppx)
 {
 	int		c;
 	char	*cmd;
+	char	**splitty;
 
 	c = 0;
 	cmd = ft_strjoin("/", ppx->argv[ppx->count]);
+	splitty = ft_split(cmd, ' ');
 	while (c < ppx->bincount)
 	{
-		if (access(ft_strjoin(ppx->envppath[c], cmd), X_OK) >= 0)
-			return (ft_strjoin(ppx->envppath[c], cmd));
+		if (access(ft_strjoin(ppx->envppath[c], splitty[0]), X_OK) >= 0)
+			return (ft_strjoin(ppx->envppath[c], splitty[0]));
 		c++;
 	}
 	customexit("ERR_CMD");
@@ -39,7 +41,7 @@ int	accesscheck(t_ppx *ppx, int argc, char **argv)
 	ppx->fd1 = open(file1, O_RDONLY);
 	if (ppx->fd1 < 0)
 		return (customexit("ERR_INFILE"));
-	ppx->fd2 = open(file2, O_WRONLY | O_CREAT | O_APPEND, 0666);
+	ppx->fd2 = open(file2, O_WRONLY | O_CREAT | O_TRUNC, 0666);
 	if (ppx->fd2 < 0)
 		return (customexit("ERR_OUTFILE"));
 	if (argc < 5)
@@ -47,22 +49,10 @@ int	accesscheck(t_ppx *ppx, int argc, char **argv)
 	return (1);
 }
 
-void	freeall(t_ppx *ppx)
-{
-	int	i;
+// void	freeall(t_ppx *ppx)
+// {
+// 	int	i;
 
-	i = 0;
-	while (ppx->isplitthisinchild[i] != NULL)
-	{
-		free (ppx->isplitthisinchild[i]);
-		i++;
-	}
-	i = 0;
-	while (ppx->envp[i] != NULL)
-	{
-		free (ppx->envp[i]);
-		i++;
-	}
-	free(ppx->isplitthisinchild);
-	free(ppx->envp);
-}
+// 	i = 0;
+// 	ft_putstr_fd("test\n", 2);
+// }

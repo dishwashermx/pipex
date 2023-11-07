@@ -6,7 +6,7 @@
 /*   By: ghwa <ghwa@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/12 09:25:12 by ghwa              #+#    #+#             */
-/*   Updated: 2023/11/03 18:16:15 by ghwa             ###   ########.fr       */
+/*   Updated: 2023/11/07 17:01:34 by ghwa             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,6 @@ int	main(int argc, char **argv, char **envp)
 		ppx.count++;
 	}
 	parentprocess(&ppx);
-	freeall(&ppx);
+	// freeall(&ppx);
 	return (0);
 }

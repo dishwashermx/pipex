@@ -6,7 +6,7 @@
 /*   By: ghwa <ghwa@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 16:17:17 by ghwa              #+#    #+#             */
-/*   Updated: 2023/11/03 18:22:56 by ghwa             ###   ########.fr       */
+/*   Updated: 2023/11/07 17:01:41 by ghwa             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,29 +29,45 @@ void	dupandclose(t_ppx *ppx)
 	else
 	{
 		close (ppx->pipefdarray[ppx->pipefdcount][1]);
+		close (ppx->pipefdarray[ppx->pipefdcount + 1][0]);
 		dup2(ppx->pipefdarray[ppx->pipefdcount + 1][1], 1);
 		dup2(ppx->pipefdarray[ppx->pipefdcount][0], 0);
 	}
 }
 
-void	childprocess(t_ppx *ppx)
+void	closeallpipes(t_ppx *ppx, int code)
 {
-	int		i;
+	int	i;
 
 	i = 0;
-	dupandclose(ppx);
 	while (i < ppx->pipecount && ppx->pipecount > 1)
 	{
-		if (i == ppx->pipefdcount + 1)
-			close (ppx->pipefdarray[i + 1][0]);
-		else if (!(i == ppx->pipefdcount))
+		if (code == 1)
 		{
 			close (ppx->pipefdarray[i][1]);
 			close (ppx->pipefdarray[i][0]);
 		}
+		else if (i == ppx->pipefdcount + 1 && code == 0)
+			;
+		else if (!(i == ppx->pipefdcount) && (i < ppx->pipecount))
+		{
+			close (ppx->pipefdarray[i][1]);
+			close (ppx->pipefdarray[i][0]);
+		}
+		else
+			break ;
+		i++;
 	}
-	ppx->isplitthisinchild = ft_split(ppx->argv[ppx->count], ' ');
-	execve(findcmdpath(ppx), ppx->isplitthisinchild, ppx->envp);
+}
+
+void	childprocess(t_ppx *ppx)
+{
+	char	**splitty;
+
+	dupandclose(ppx);
+	closeallpipes(ppx, 0);
+	splitty = ft_split(ppx->argv[ppx->count], ' ');
+	execve(findcmdpath(ppx), splitty, ppx->envp);
 	customexit("EXECVE");
 }
 
@@ -59,10 +75,9 @@ void	parentprocess(t_ppx *ppx)
 {
 	int	status;
 
-	printf("waiting for pid: %d\n", ppx->pid);
-	close (ppx->pipefdarray[ppx->pipefdcount][0]);
-	close (ppx->pipefdarray[ppx->pipefdcount][1]);
-	waitpid(ppx->pid, &status, 0);
+	closeallpipes(ppx, 1);
+	waitpid(-1, &status, 0);
+	printf("waiting for %d\n", ppx->pid);
 	if (WIFEXITED(status))
 		ft_printf("Child process exited with status: %d\n", WEXITSTATUS(status));
 	else
