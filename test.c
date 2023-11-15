@@ -33,3 +33,4 @@ int	main(int argc, char **argv, char **envp)
      4	-rwxr-xr-x   1 ghwa  2023_kuala-lumpur  55880 Nov  7 17:17 pipex
      5	-rw-r--r--@  1 ghwa  2023_kuala-lumpur   1159 Nov  7 17:09 test.c
      6	-rw-r--r--   1 ghwa  2023_kuala-lumpur    383 Nov  7 17:17 test2.c
+heredocheredoccc

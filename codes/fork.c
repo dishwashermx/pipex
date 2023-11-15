@@ -6,7 +6,7 @@
 /*   By: ghwa <ghwa@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 16:17:17 by ghwa              #+#    #+#             */
-/*   Updated: 2023/11/15 10:50:50 by ghwa             ###   ########.fr       */
+/*   Updated: 2023/11/15 11:39:00 by ghwa             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@ void	dupandclose(t_ppx *ppx)
 {
 	if (ppx->count == 2)
 	{
-		printf("first pipe read pipe %d, write pipe %d\n", ppx->fd1, ppx->pipefdarray[ppx->pipefdcount][1]);
 		close (ppx->pipefdarray[ppx->pipefdcount][0]);
 		dup2(ppx->pipefdarray[ppx->pipefdcount][1], 1);
 		dup2(ppx->fd1, 0);
@@ -24,15 +23,13 @@ void	dupandclose(t_ppx *ppx)
 	else if (ppx->count == (ppx->argc - 2))
 	{
 		close (ppx->pipefdarray[ppx->pipefdcount][1]);
-		printf("last pipe read pipe %d, write pipe %d\n", ppx->pipefdarray[ppx->pipefdcount][0], ppx->fd2);
 		dup2(ppx->pipefdarray[ppx->pipefdcount][0], 0);
 		dup2(ppx->fd2, 1);
 	}
 	else
 	{
-		close (ppx->pipefdarray[ppx->pipefdcount + 1][1]);
+		close (ppx->pipefdarray[ppx->pipefdcount + 1][0]);
 		close (ppx->pipefdarray[ppx->pipefdcount][1]);
-		printf("middle pipe read pipe %d, write pipe %d\n", ppx->pipefdarray[ppx->pipefdcount][0], ppx->pipefdarray[ppx->pipefdcount + 1][1]);
 		dup2(ppx->pipefdarray[ppx->pipefdcount][0], 0);
 		dup2(ppx->pipefdarray[ppx->pipefdcount + 1][1], 1);
 	}
@@ -62,11 +59,16 @@ void	closeallpipes(t_ppx *ppx, int code)
 	}
 }
 
-void	childprocess(t_ppx *ppx)
+void	childprocess(t_ppx *ppx, t_hd *hd)
 {
 	char	**splitty;
 
-	printf("TESTING count %d cmd %s pipe %d\n", ppx->count, ppx->argv[ppx->count], ppx->pipefdcount);
+	if (ppx->heredoc == 1 && ppx->count == 2)
+	{
+		closeallpipes(ppx, 0);
+		heredocinput(ppx, hd);
+		exit(EXIT_SUCCESS);
+	}
 	closeallpipes(ppx, 0);
 	dupandclose(ppx);
 	splitty = ft_split(ppx->argv[ppx->count], ' ');
@@ -84,9 +86,7 @@ void	parentprocess(t_ppx *ppx)
 	{
 		wait(NULL);
 		i++;
-		printf("%d child passed\n", i);
 	}
-	printf("PARENT DONE WAITING\n");
 }
 
 int	forkprocess(t_ppx *ppx, t_hd *hd)
@@ -96,15 +96,8 @@ int	forkprocess(t_ppx *ppx, t_hd *hd)
 	pid = fork();
 	if (pid == -1)
 		customexit("FORK");
-	else if (ppx->heredoc == 1 && ppx->count == 2 && pid == 0)
-	{
-		printf("pls\n");
-		closeallpipes(ppx, 0);
-		heredocinput(ppx, hd);
-		return (0);
-	}
 	else if (pid == 0)
-		childprocess(ppx);
+		childprocess(ppx, hd);
 	if ((ppx->count > 2) && ppx->pipecount > 1)
 		ppx->pipefdcount++;
 	return (0);

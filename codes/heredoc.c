@@ -6,7 +6,7 @@
 /*   By: ghwa <ghwa@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/08 11:04:12 by ghwa              #+#    #+#             */
-/*   Updated: 2023/11/15 10:29:17 by ghwa             ###   ########.fr       */
+/*   Updated: 2023/11/15 11:39:23 by ghwa             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,10 +36,8 @@ char	*heredocinput(t_ppx *ppx, t_hd *hd)
 		if (ft_strncmp(hd->limiter, temp, ft_strlen(hd->limiter)) == 0)
 		{
 			dup2(ppx->pipefdarray[ppx->pipefdcount][1], 1);
-			printf("%s", hd->input);
 			free (hd->input);
 			free (temp);
-			exit(EXIT_SUCCESS);
 			return (NULL);
 		}
 		if (hd->input == NULL)
