@@ -6,7 +6,7 @@
 /*   By: ghwa <ghwa@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/24 16:34:17 by ghwa              #+#    #+#             */
-/*   Updated: 2023/11/15 11:51:59 by ghwa             ###   ########.fr       */
+/*   Updated: 2023/11/15 13:28:15 by ghwa             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,10 @@ int	accesscheck(t_ppx *ppx, int argc, char **argv)
 		ppx->fd1 = open(file1, O_RDONLY);
 		if (ppx->fd1 < 0)
 			return (customexit("ERR_INFILE"));
-	}
 	ppx->fd2 = open(file2, O_WRONLY | O_CREAT | O_TRUNC, 0666);
+	}
+	else
+		ppx->fd2 = open(file2, O_WRONLY | O_CREAT | O_APPEND, 0666);
 	if (ppx->fd2 < 0)
 		return (customexit("ERR_OUTFILE"));
 	if (argc < 5)
