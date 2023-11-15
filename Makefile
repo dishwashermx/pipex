@@ -6,11 +6,11 @@
 #    By: ghwa <ghwa@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/09/01 15:48:02 by ghwa              #+#    #+#              #
-#    Updated: 2023/11/03 18:17:24 by ghwa             ###   ########.fr        #
+#    Updated: 2023/11/08 11:07:00 by ghwa             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-CFILES  = pipex.c initall.c cmd.c fork.c exit.c
+CFILES  = pipex.c initall.c cmd.c fork.c exit.c heredoc.c
 SOURCES = $(addprefix codes/, $(CFILES))
 OBJECTS = ${SOURCES:.c=.o}
 CFLAGS = -Wall -Werror -Wextra -g3 -ggdb

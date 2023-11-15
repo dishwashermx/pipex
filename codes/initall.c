@@ -6,7 +6,7 @@
 /*   By: ghwa <ghwa@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/12 13:55:54 by ghwa              #+#    #+#             */
-/*   Updated: 2023/11/07 11:45:12 by ghwa             ###   ########.fr       */
+/*   Updated: 2023/11/15 10:23:47 by ghwa             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,8 @@ void	initvalues(t_ppx *ppx, int argc, char **argv)
 		ppx->heredoc = 0;
 	if (ppx->heredoc == 0)
 		ppx->file1 = argv[0];
-	else
-		ppx->file1 = argv[1];
 	ppx->file2 = argv[argc - 1];
-	ppx->count = 2 + ppx->heredoc;
+	ppx->count = 2;
 	ppx->argc = argc;
 	ppx->argv = argv;
 	ppx->pipefdcount = 0;
@@ -65,6 +63,7 @@ int	initpipefd(t_ppx *ppx)
 	int	i;
 
 	i = 0;
+	ppx->pipefdcount = 0;
 	pipecount = ppx->argc - 4;
 	ppx->pipecount = pipecount;
 	ppx->pipefdarray = malloc(pipecount * sizeof(void *));
