@@ -6,7 +6,7 @@
 /*   By: ghwa <ghwa@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/12 13:48:55 by ghwa              #+#    #+#             */
-/*   Updated: 2023/11/10 14:33:27 by ghwa             ###   ########.fr       */
+/*   Updated: 2023/11/15 13:42:15 by ghwa             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 # include <string.h>
 # include <sys/types.h>
 # include <sys/wait.h>
-# include "../../libft/libft.h"
+# include "../libft/libft.h"
 
 typedef struct s_heredoc {
 	char	*limiter;
